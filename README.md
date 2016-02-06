@@ -1,37 +1,31 @@
-Ansible Recipes to Install Kubernetes
-=====================================
+Ansible playbook to install a development Kubernetes (k8s) cluster
+==================================================================
 
 Basic recipes using the ansible cloudstack module to create ssh keys, sec group etc and deploy [Kubernetes](http://kubernetes.io) on [CoreOS](http://coreos.com).
+This setup is to be used for development purposes only, as there are no HA features in place.
 
 Prerequisites
 -------------
 
-You will need Ansible and [cs](https://github.com/exoscale/cs) :)
+You will need Ansible >= 2.0, sshpubkeys and [cs](https://github.com/exoscale/cs) :)
 
     $ sudo apt-get install -y python-pip
     $ sudo pip install ansible
     $ sudo pip install cs
+    $ sudo pip install sshpubkeys
 
-Setup cs
---------
+Setup cloudstack
+----------------
 
 Create a `~/.cloudstack.ini` file with your creds and cloudstack endpoint:
 
     [cloudstack]
-    endpoint = <your cloudstack api endpoint>
+    endpoint = https://api.exoscale.ch/compute
     key = <your api access key> 
     secret = <your api secret key> 
     method = post
 
 We need to use the http POST method to pass the userdata to the coreOS instances.
-
-Clone recursive
----------------
-
-    $ git clone --recursive https://github.com/runseb/ansible-kubernetes.git
-    $ cd ansible-kubernetes
-
-There is the [ansible-cloudstack](https://github.com/resmo/ansible-cloudstack) submodule in there.
 
 Create a Kubernetes cluster
 ---------------------------
@@ -40,23 +34,20 @@ Create a Kubernetes cluster
 
 Some variables can be edited in the `k8s.yml` file.
 This will start a Kubernetes master node and a number of compute nodes.
-This is all setup via coreOS instances and passing userdata.
 
-Check the tasks and templates in `roles/k8s`
+Check the tasks and templates in `roles/k8s`.
 
-Create etcd cluster
--------------------
+Test your cluster
+-----------------
 
-That's a bonus to this work, there is a playbook to create an independent etcd cluster.
+First spawn a tunnel to your master node with:
 
-    $ ansible-playbook etcd.yml
+    $ ssh -nNT -L 8080:127.0.0.1:8080 -i ~/.ssh/id_rsa_k8s core@<master-node-ip>
 
-Edit some of the variables in the `etcd.yml` file directly.
+Then run
 
-Dependencies
-------------
+    $ kubectl get nodes
 
-This depends on the Ansible cloudstack [module](https://github.com/resmo/ansible-cloudstack). It is loaded in this repo as a git submodule.
 
-This module depends on [cs](https://github.com/exoscale/cs), this module will look for the `CLOUDSTACK_ENDPOINT`, `CLOUDSTACK_KEY`, `CLOUDSTACK_SECRET` and `CLOUDSTACK_METHOD` environment variables.
+
 
