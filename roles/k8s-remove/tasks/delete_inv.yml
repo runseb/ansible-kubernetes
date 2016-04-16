@@ -1,0 +1,4 @@
+# Create inventory file
+
+  - name: Remove old inventory
+    file: path=./inventory state=absent

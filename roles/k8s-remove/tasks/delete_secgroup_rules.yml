@@ -1,0 +1,85 @@
+# Add Rule to etcd security group
+
+#  - name: etcd access for k8s
+#    local_action:
+#     module: cs_securitygroup_rule
+#     name: "{{ etcd_security_group_name }}"
+#     start_port: 4001
+#     end_port: 4001
+#     user_security_group: "{{ k8s_security_group_name }}"
+
+# Rules for the k8s security group
+
+  - name: Remove SSH for k8s
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 22
+     end_port: 22
+     state: absent
+
+
+#etcd
+  - name: Remove etcd 4001
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 4001
+     end_port: 4001
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+  - name: Remove etcd 7001
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 7001
+     end_port: 7001
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+  - name: Remove etcd 2379
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 7001
+     end_port: 7001
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+  - name: Remove etcd 2380
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 2380
+     end_port: 2380
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+  - name: Remove flannel UDP 8472
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 8472
+     end_port: 8472
+     protocol: udp
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+#k8s api
+  - name: Remove k8s 8080
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 8080
+     end_port: 8080
+     user_security_group: "{{ k8s_security_group_name }}"
+     state: absent
+
+  - name: Remove k8s public 8080
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ k8s_security_group_name }}"
+     start_port: 8080
+     end_port: 8080
+     state: absent
